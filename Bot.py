@@ -2,6 +2,9 @@ import discord
 import random
 import json
 import sqlite3
+import datetime
+import os
+from datetime import timezone, tzinfo, timedelta
 from discord.ext import commands
 
 client = commands.Bot(command_prefix="!s ")
@@ -27,6 +30,7 @@ async def on_member_remove(member):
     channel = client.get_channel(CHANNEL)
     await channel.send(f"Au revoir {member.mention} ...")
 
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -34,10 +38,18 @@ async def on_message(message):
 
     user = message.author.name
     msg = message.content
-    print (f"{user} : {msg}")
+    channel = message.channel
+    guild = message.guild
+    time = datetime.datetime.now()
+    print(f"{time} : {user} : {msg}")
+    if guild:
+        path = f"chatlogs/{guild}"
+        file_path = path + f"/{channel.name}.txt"
+        if not os.path.exists(path):
+            os.makedirs(path)
+        with open(file_path, 'a+', encoding="utf-8") as f:
+            print(f"{time} : {user} : {msg}".format(message), file=f)
     await client.process_commands(message)
-
-
 
 @client.command()
 async def help(ctx):
@@ -49,12 +61,17 @@ async def help(ctx):
     embed.add_field(name="!s rp <personnage> <rp>",value="Permet de RP sous un pseudo", inline=False)
     embed.add_field(name="!s inv <personnage> <objet>",value="Permet d'ajouter un objet à son inventaire (EN CONSTRUCTION)", inline=False)
     embed.add_field(name="!s create",value="Permet de créer un personnage (EN CONSTRUCTION)", inline=False)
+    embed.add_field(name="!s kick", value="Permet de kick", inline=False)
+    embed.add_field(name="!s ban", value="Permet de ban", inline=False)
+    embed.add_field(name="!s mute", value="Permet de mute", inline=False)
     await ctx.channel.send(embed=embed)
 
 
 @client.command()
 async def love(ctx):
-    await ctx.send("Plein d'amour pour vous!")
+    embed = discord.Embed(title="Plein d'amour pour vous !", color=0x176cd5)
+    embed.set_image(url='https://gifimage.net/wp-content/uploads/2017/06/furry-gif-13-1.gif')
+    await ctx.send(embed=embed)
 
 @client.command()
 @commands.has_permissions(kick_members=True)
@@ -75,9 +92,6 @@ async def mute(ctx, self, member: discord.Member, *, reason=None):
 async def ban(ctx, self, member: discord.Member, *, reason=None):
     await member.ban(reason=reason)
     await ctx.send(f'{member} a été ban du serveur.')
-
-
-
 
 @client.command()
 @commands.has_permissions(manage_messages=True)
@@ -136,9 +150,97 @@ async def inv(ctx, word1, words):
 @client.command()
 async def boop(ctx, member):
     author = ctx.message.author.name
+    boops = [
+        'https://cdn.discordapp.com/attachments/676867450880655360/700021697751023616/1578885267_af30659e164e085c745814bf1174cafb.gif',
+        'https://cdn.discordapp.com/attachments/469849157784567809/569994696945041418/1549948814.rukaisho_yasha_and_zayne_hugs_gif.gif',
+        'https://media.tenor.com/images/f6f87118730878c578e0f188da5270fc/tenor.gif',
+        'https://pa1.narvii.com/6394/cd574351837c6181222057412f91f9d1c1bfe3db_hq.gif',
+        'https://i.pinimg.com/originals/f7/1a/5d/f71a5d5f59441a724e820dc7f46ea94e.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715137595352416326/636IDPR.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715137954837954681/inconnu.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715138082441003029/inconnu.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715138093233078333/inconnu.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715138449228824606/15905726850882738996636693413586.gif',
+    ]
+    boop = random.choice(boops)
     embed = discord.Embed(title="Boop !", description=f"**{author}** boop **{member}**!", color=0x176cd5)
-    embed.set_thumbnail(
-        url="https://cdn.discordapp.com/attachments/676867450880655360/700021697751023616/1578885267_af30659e164e085c745814bf1174cafb.gif")
+    embed.set_image(url=boop)
+    await ctx.send(embed=embed)
+
+
+@client.command()
+async def nom(ctx, member):
+    author = ctx.message.author.name
+    noms = [
+        'https://cdn.discordapp.com/attachments/714608745065480274/715159629012795443/tenor_1.gif',
+    ]
+    nom = random.choice(noms)
+    embed = discord.Embed(
+        title="Nom !", description=f"**{author}** nom **{member}**!", color=0x176cd5)
+    embed.set_image(url=nom)
+    await ctx.send(embed=embed)
+
+
+@client.command()
+async def mordille(ctx, member):
+    author = ctx.message.author.name
+    mords = [
+        'https://cdn.discordapp.com/attachments/714608745065480274/715165486475903026/chien-qui-mordille-l-oreille-du-chat.gif',
+        'https://cdn.discordapp.com/attachments/714608745065480274/715165486954053700/ca332c5a7e37bdd95c045ac1fb1ddc8c.gif'
+    ]
+    mord = random.choice(mords)
+    embed = discord.Embed(title="Attention !", description=f"**{author}** mordille **{member}**!", color=0x176cd5)
+    embed.set_image(url=mord)
+    await ctx.send(embed=embed)
+
+
+@client.command()
+async def hug(ctx, member):
+    author = ctx.message.author.name
+    hugs = [
+        'https://cdn.discordapp.com/attachments/714608745065480274/715166152493498368/tenor_2.gif',
+        'https://cdn.discordapp.com/attachments/714608745065480274/715166153697132584/5553845_170x100.gif',
+        'https://cdn.discordapp.com/attachments/714608745065480274/715166153147940905/tumblr_af0732ecfd70d02a6ed3c0740ab767a1_ad57ae67_1280.webp',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715167806219485254/tenor.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715168637765550150/84a06e18c6413b092b754b9fbec6801a.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715168961087406100/6812fb166abe2aa58b3a1875174538e437c22f6980752f13d33a5150e95d190a.gif',
+        ''
+    ]
+    hug = random.choice(hugs)
+    embed = discord.Embed(title="Câlin !", description=f"**{author}** câline **{member}**!", color=0x176cd5)
+    embed.set_image(url=hug)
+    await ctx.send(embed=embed)
+
+
+@client.command()
+async def gratouille(ctx, member):
+    author = ctx.message.author.name
+    grattes = [
+        'https://cdn.discordapp.com/attachments/714608745065480274/715160055791616050/DisfiguredWelllitBongo-size_restricted.gif',
+    ]
+    gratte = random.choice(grattes)
+    embed = discord.Embed(title="Gratouille !", description=f"**{author}** grattouille **{member}**!", color=0x176cd5)
+    embed.set_image(url=gratte)
+    await ctx.send(embed=embed)
+
+
+@client.command()
+async def kiss(ctx, member):
+    author = ctx.message.author.name
+    kisses = [
+        'https://d.facdn.net/art/kusuguttai/1550707158/1550707158.kusuguttai_kissandnibble.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715139472169107516/15905729298983769141377727103849.gif',
+        'https://thumbs.gfycat.com/AcrobaticUnconsciousHyrax-small.gif',
+        'https://media.discordapp.net/attachments/706968022279127110/715139786494705684/15905730047521705077081053990760.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715140059065614366/15905730710611323851964894586756.gif',
+        'https://memestatic.fjcdn.com/gifs/Cute+kiss+smalli+have+a+soft+spot+for+that+sweden_4d9e32_6366724.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715140576798048327/15905731898017745238231433871181.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715141088591216640/f1eea14bc88ca4a30332c9140c64e1a8.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715141822565056522/94e59d8acaa3539b9635341f11fd0f58.gif',
+    ]
+    kiss = random.choice(kisses)
+    embed = discord.Embed(title="Kiss !", description=f"**{author}** a embrassé **{member}**! >w<", color=0x176cd5)
+    embed.set_image(url=kiss)
     await ctx.send(embed=embed)
 
 
