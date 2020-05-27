@@ -42,19 +42,41 @@ async def on_message(message):
 @client.command()
 async def help(ctx):
     embed = discord.Embed(title="Commandes disponibles:",description="Liste des commandes disponibles", color=0x008FFF)
-    embed.add_field(name="!help", value="Affiche ce menu", inline=False)
-    embed.add_field(name="!love",value="Envoie de l'amour <3", inline=False)
-    embed.add_field(name="!avatar <utilisateur>",value="Permet de voir l'avatar de quelqu'un", inline=False)
-    embed.add_field(name="!clear <nombre>",value="Supprime le nombre de message spécifié", inline=False)
-    embed.add_field(name="!rp <personnage> <rp>",value="Permet de RP sous un pseudo", inline=False)
-    embed.add_field(name="!inv <personnage> <objet>",value="Permet d'ajouter un objet à son inventaire (EN CONSTRUCTION)", inline=False)
-    embed.add_field(name="!create",value="Permet de créer un personnage (EN CONSTRUCTION)", inline=False)
+    embed.add_field(name="!s help", value="Affiche ce menu", inline=False)
+    embed.add_field(name="!s love",value="Envoie de l'amour <3", inline=False)
+    embed.add_field(name="!s avatar <utilisateur>",value="Permet de voir l'avatar de quelqu'un", inline=False)
+    embed.add_field(name="!s clear <nombre>",value="Supprime le nombre de message spécifié", inline=False)
+    embed.add_field(name="!s rp <personnage> <rp>",value="Permet de RP sous un pseudo", inline=False)
+    embed.add_field(name="!s inv <personnage> <objet>",value="Permet d'ajouter un objet à son inventaire (EN CONSTRUCTION)", inline=False)
+    embed.add_field(name="!s create",value="Permet de créer un personnage (EN CONSTRUCTION)", inline=False)
     await ctx.channel.send(embed=embed)
 
 
 @client.command()
 async def love(ctx):
     await ctx.send("Plein d'amour pour vous!")
+
+@client.command()
+@commands.has_permissions(kick_members=True)
+async def kick(ctx, member: discord.Member, *, reason=None):
+    await member.kick(reason=reason)
+    await ctx.send(f'{member} a été kick du serveur.')
+
+
+@client.command()
+@commands.has_permissions(mute_members=True)
+async def mute(ctx, self, member: discord.Member, *, reason=None):
+    await member.mute(reason=reason)
+    await ctx.send(f'{member} a été mute sûrement pour une bonne raison =w=')
+
+
+@client.command()
+@commands.has_permissions(ban_members=True)
+async def ban(ctx, self, member: discord.Member, *, reason=None):
+    await member.ban(reason=reason)
+    await ctx.send(f'{member} a été ban du serveur.')
+
+
 
 
 @client.command()
