@@ -10,25 +10,29 @@ from discord.ext import commands
 client = commands.Bot(command_prefix="!s ")
 client.remove_command("help")
 
-CHANNEL = "671497752328273939"
-
 @client.event
 async def on_ready():
-    await client.change_presence(status=discord.Status.online, activity=discord.Game('fansub BNA'))
+    guilds = client.guilds
+
+    for guild in guilds:
+        print(guild.name + ": " + str(guild.id))
+    await client.change_presence(status=discord.Status.online, activity=discord.Game('aimer Doudou plus que lui'))
     print("Connecté en tant que")
     print(client.user.name)
     print("--------")
 
 
 @client.event
-async def on_member_join(member):
-    channel = client.get_channel(CHANNEL)
-    await channel.send(f"Bienvenue sur le serveur {member.mention}!")
+async def on_member_join(ctx, member):
+    channel = member.guild.system_channel
+    if channel != None:
+        await channel.send(f"Bienvenue sur le serveur {member.mention}!")
 
 @client.event
-async def on_member_remove(member):
-    channel = client.get_channel(CHANNEL)
-    await channel.send(f"Au revoir {member.mention} ...")
+async def on_member_remove(ctx, member):
+    channel = member.guild.system_channel
+    if channel != None:
+        await channel.send(f"Au revoir {member.mention} ...")
 
 
 @client.event
@@ -41,7 +45,7 @@ async def on_message(message):
     channel = message.channel
     guild = message.guild
     time = datetime.datetime.now()
-    print(f"{time} : {user} : {msg}")
+    print(f"{time} : {guild} : {user} : {msg}")
     if guild:
         path = f"chatlogs/{guild}"
         file_path = path + f"/{channel.name}.txt"
@@ -146,6 +150,11 @@ async def inv(ctx, word1, words):
          await ctx.send("Le personnage n'existe pas")
     file.close()
 
+@client.command()
+async def serveurs(ctx):
+    servers = list(client.guilds)
+    await ctx.send(f"Connecté à {str(len(servers))} serveurs:")
+
 
 @client.command()
 async def boop(ctx, member):
@@ -160,7 +169,6 @@ async def boop(ctx, member):
         'https://cdn.discordapp.com/attachments/706968022279127110/715137954837954681/inconnu.gif',
         'https://cdn.discordapp.com/attachments/706968022279127110/715138082441003029/inconnu.gif',
         'https://cdn.discordapp.com/attachments/706968022279127110/715138093233078333/inconnu.gif',
-        'https://cdn.discordapp.com/attachments/706968022279127110/715138449228824606/15905726850882738996636693413586.gif',
     ]
     boop = random.choice(boops)
     embed = discord.Embed(title="Boop !", description=f"**{author}** boop **{member}**!", color=0x176cd5)
@@ -200,11 +208,9 @@ async def hug(ctx, member):
     hugs = [
         'https://cdn.discordapp.com/attachments/714608745065480274/715166152493498368/tenor_2.gif',
         'https://cdn.discordapp.com/attachments/714608745065480274/715166153697132584/5553845_170x100.gif',
-        'https://cdn.discordapp.com/attachments/714608745065480274/715166153147940905/tumblr_af0732ecfd70d02a6ed3c0740ab767a1_ad57ae67_1280.webp',
         'https://cdn.discordapp.com/attachments/706968022279127110/715167806219485254/tenor.gif',
         'https://cdn.discordapp.com/attachments/706968022279127110/715168637765550150/84a06e18c6413b092b754b9fbec6801a.gif',
         'https://cdn.discordapp.com/attachments/706968022279127110/715168961087406100/6812fb166abe2aa58b3a1875174538e437c22f6980752f13d33a5150e95d190a.gif',
-        ''
     ]
     hug = random.choice(hugs)
     embed = discord.Embed(title="Câlin !", description=f"**{author}** câline **{member}**!", color=0x176cd5)
@@ -237,6 +243,7 @@ async def kiss(ctx, member):
         'https://cdn.discordapp.com/attachments/706968022279127110/715140576798048327/15905731898017745238231433871181.gif',
         'https://cdn.discordapp.com/attachments/706968022279127110/715141088591216640/f1eea14bc88ca4a30332c9140c64e1a8.gif',
         'https://cdn.discordapp.com/attachments/706968022279127110/715141822565056522/94e59d8acaa3539b9635341f11fd0f58.gif',
+        'https://cdn.discordapp.com/attachments/706968022279127110/715138449228824606/15905726850882738996636693413586.gif',
     ]
     kiss = random.choice(kisses)
     embed = discord.Embed(title="Kiss !", description=f"**{author}** a embrassé **{member}**! >w<", color=0x176cd5)
